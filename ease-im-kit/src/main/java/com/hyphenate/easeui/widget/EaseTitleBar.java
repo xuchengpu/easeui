@@ -261,7 +261,10 @@ public class EaseTitleBar extends RelativeLayout implements View.OnClickListener
     public void setRightLayoutClickListener(OnClickListener listener){
         rightLayout.setOnClickListener(listener);
     }
-    
+    public void setToobarOverflowIcon(Drawable drawable){
+        toolbar.setOverflowIcon(drawable);
+    }
+
     public void setLeftLayoutVisibility(int visibility){
         leftLayout.setVisibility(visibility);
     }
