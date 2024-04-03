@@ -19,8 +19,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -29,6 +27,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMFileMessageBody;
 import com.hyphenate.chat.EMImageMessageBody;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseIM;
@@ -53,6 +52,7 @@ public class EaseShowBigImageActivity extends EaseBaseActivity {
 	private Bitmap bitmap;
 	private String emojiIconId = "";
 	private boolean isDownloaded;
+    private EMCallBack callback;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -136,8 +136,14 @@ public class EaseShowBigImageActivity extends EaseBaseActivity {
 		pd.setCanceledOnTouchOutside(false);
 		pd.setMessage(str1);
 		pd.show();
-        final EMCallBack callback = new EMCallBack() {
+        callback = new EMCallBack() {
 			public void onSuccess() {
+                if (((EMImageMessageBody) msg.getBody()).downloadStatus() != EMFileMessageBody.EMDownloadStatus.SUCCESSED) {
+                    //Thumbnail downloads also take this callback，The sdk will remove the callback after the callback is called once,
+                    // so you need to reset a new callback to listen for the download of the attachment
+                    msg.setMessageStatusCallback(callback);
+                    return;
+                }
 			    EMLog.e(TAG, "onSuccess" );
 				runOnUiThread(new Runnable() {
 					@Override
