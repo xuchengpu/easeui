@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">easeUI</string>
-
     <string name="location_recv">[%1$s\'s location]</string>
     <string name="location_prefix">[My location]</string>
     <string name="picture">[Image]</string>
