@@ -28,9 +28,11 @@ import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.util.EMLog;
 import com.hyphenate.util.ImageUtils;
 import com.hyphenate.util.PathUtil;
+import com.hyphenate.util.UriUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.UUID;
 
 public class EaseHandleMessagePresenterImpl extends EaseHandleMessagePresenter {
     private static final String TAG = EaseChatLayout.class.getSimpleName();
@@ -360,12 +362,27 @@ public class EaseHandleMessagePresenterImpl extends EaseHandleMessagePresenter {
                 options = ImageUtils.getBitmapOptions(mView.context(), imageUri);
             }
             if ("image/heif".equalsIgnoreCase(options.outMimeType)) {
-                imageUri = EaseImageUtils.imageToJpeg(mView.context(), imageUri, new File(PathUtil.getInstance().getImagePath(), "image_message_temp.jpeg"));
+                String fileNameByUri = UriUtils.getFileNameByUri(mView.context(), imageUri);
+                String nameWithoutExtension = removeLastExtension(fileNameByUri);
+                imageUri = EaseImageUtils.imageToJpeg(mView.context(), imageUri, new File(conversation.getMessageAttachmentPath(), nameWithoutExtension+".jpeg"));
             }
         } catch (Exception e) {
             e.printStackTrace();
+            EMLog.e(TAG,"handleImageHeifToJpeg:"+e.getMessage());
         }
+        EMLog.d(TAG,"handleImageHeifToJpeg:imageUri="+imageUri);
         return imageUri;
+    }
+
+    private String removeLastExtension(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return UUID.randomUUID().toString();
+        }
+        int lastDotIndex = str.lastIndexOf('.');
+        if (lastDotIndex == -1) {
+            return str; // 如果没有找到.，返回原字符串
+        }
+        return str.substring(0, lastDotIndex);
     }
 }
 
