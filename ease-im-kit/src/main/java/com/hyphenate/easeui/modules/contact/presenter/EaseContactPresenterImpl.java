@@ -8,6 +8,7 @@ import com.hyphenate.easeui.EaseIM;
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.provider.EaseUserProfileProvider;
+import com.hyphenate.easeui.utils.EaseUserUtils;
 import com.hyphenate.exceptions.HyphenateException;
 
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ public class EaseContactPresenterImpl extends EaseContactPresenter {
             @Override
             public int compare(EaseUser lhs, EaseUser rhs) {
                 if(lhs.getInitialLetter().equals(rhs.getInitialLetter())){
-                    return lhs.getNickname().compareTo(rhs.getNickname());
+                    return EaseUserUtils.getDisplayName(lhs.getUsername()).compareTo(EaseUserUtils.getDisplayName(rhs.getUsername()));
                 }else{
                     if("#".equals(lhs.getInitialLetter())){
                         return 1;
